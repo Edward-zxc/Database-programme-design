@@ -15,7 +15,8 @@
 - 选择可借用车辆并发出借车请求
 
 ##  2.数据库表设计（主要表结构）
-
+总概：
+![img.png](PICS/general.png)
 1. **Admins 表**：存储管理员信息
     - `admin_id` (主键)
     - `username`
