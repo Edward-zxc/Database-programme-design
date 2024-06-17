@@ -20,21 +20,21 @@
     - `admin_id` (主键)
     - `username`
     - `password`
-
+![img.png](PICS/admin.png)
 2. **Users 表**：存储用户信息
     - `user_id` (主键)
     - `username`
     - `password`
     - `email`
     - `phone`
-
+![img.png](PICS/user.png)
 3. **UserRequests 表**：存储用户的借车请求信息
     - `request_id` (主键)
     - `user_id` (外键，关联到 Users 表)
     - `vehicle_id` (外键，关联到 Vehicles 表)
     - `request_date`
     - `status` (状态 - 待审核, 已审核, 已拒绝)
-
+![img.png](PICS/userRequest.png)
 4. **Vehicles 表**：存储车辆信息
     - `vehicle_id` (主键)
     - `type`
@@ -42,7 +42,7 @@
     - `year`
     - `status` (状态 - 可借, 已借出, 维护中等)
     - `price_per_day`
-
+![img.png](PICS/vehicles.png)
 5. **Rentals 表**：存储租赁信息
     - `rental_id` (主键)
     - `user_id` (外键，关联到 Users 表)
@@ -50,40 +50,40 @@
     - `rental_date`
     - `return_date`
     - `status` (状态 - 请求中, 已审核, 已借出, 已归还)
-
+![img.png](PICS/rentals.png)
 6. **VehicleMaintenance 表**：存储车辆维护信息
     - `maintenance_id` (主键)
     - `vehicle_id` (外键，关联到 Vehicles 表)
     - `maintenance_date`
     - `description`
-
+![img.png](PICS/VehicleMaintenance.png)
 7. **Payments 表**：存储支付信息
     - `payment_id` (主键)
     - `rental_id` (外键，关联到 Rentals 表)
     - `payment_date`
     - `amount`
-
+![img.png](PICS/Payments.png)
 8. **Reviews 表**：存储用户对车辆的评价信息
     - `review_id` (主键)
     - `user_id` (外键，关联到 Users 表)
     - `vehicle_id` (外键，关联到 Vehicles 表)
     - `rating`
     - `comment`
-
+![img.png](PICS/reviews.png)
 9. **Locations 表**：存储车辆位置信息
     - `location_id` (主键)
     - `vehicle_id` (外键，关联到 Vehicles 表)
     - `latitude`
     - `longitude`
     - `address`
-
+![img.png](PICS/Locations.png)
 10. **Messages 表**：存储用户和管理员之间的消息通信记录
     - `message_id` (主键)
     - `sender_id` (外键，关联到 Users 表或 Admins 表)
     - `receiver_id` (外键，关联到 Users 表或 Admins 表)
     - `message_content`
     - `timestamp`
-
+![img.png](PICS/Messages.png)
 ## 业务流程车辆租赁系统业务流程
 
 1. **用户注册和登录**
@@ -115,7 +115,7 @@
 
 这些业务流程涵盖了用户、管理员以及车辆在租赁系统中的主要操作和交互过程，能够满足用户租车、管理员管理、车辆运营等方面的需求。
 ## E-R
-![img_2.png](img_2.png)
+
 # Database design
 
 ## 1. Requirements Analysis
