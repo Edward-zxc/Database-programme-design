@@ -20,13 +20,11 @@
     - `admin_id` (主键)
     - `username`
     - `password`
-    - `name`
 
 2. **Users 表**：存储用户信息
     - `user_id` (主键)
     - `username`
     - `password`
-    - `name`
     - `email`
     - `phone`
 
@@ -39,7 +37,7 @@
 
 4. **Vehicles 表**：存储车辆信息
     - `vehicle_id` (主键)
-    - `make`
+    - `type`
     - `model`
     - `year`
     - `status` (状态 - 可借, 已借出, 维护中等)
@@ -116,6 +114,127 @@
    - 用户和管理员之间可以进行消息通信，包括借车请求的确认、支付信息的提醒等。
 
 这些业务流程涵盖了用户、管理员以及车辆在租赁系统中的主要操作和交互过程，能够满足用户租车、管理员管理、车辆运营等方面的需求。
+## E-R
+![img_2.png](img_2.png)
+# Database design
 
-# 3.实体关系图（ERD）
+## 1. Requirements Analysis
 
+#### Administrator Functional Requirements
+- Add, delete, modify and query vehicle information
+- Add, delete, modify and query user information
+- Add, delete, modify and query rental information
+- Review user's request for borrowing a vehicle, and carry out the operation of vehicle out and vehicle back.
+
+#### User Functional Requirements
+- Query vehicle information
+- Checking rental information
+- Query user information
+- Select a vehicle for borrowing and send a request for borrowing the vehicle.
+
+## 2. Database table design (main table structure)
+
+1. **Admins table**: store administrator information
+    - `admin_id` (primary key)
+    - `username` (primary key)
+    - `password` (primary key)
+    - `name` (primary key)
+
+2. **Users table**: stores user information
+    - `user_id` (primary key)
+    - `user_id` (primary key) `username`
+    - `password` (primary key)
+    - `name` (primary key) `username` `password`
+    - `email` (primary key)
+    - `phone` (primary key) `username` `password` `name` `email`
+
+3. **UserRequests table**: stores information about the user's request to borrow a car
+    - `request_id` (primary key)
+    - `user_id` (foreign key, associated with Users table)
+    - `vehicle_id` (foreign key, associated with the Vehicles table)
+    - `request_date` (foreign key, associated with the Users table)
+    - `status` (status - Pending, Reviewed, Rejected)
+
+4. **Vehicles table**: stores vehicle information
+    - `vehicle_id` (primary key)
+    - `make` (primary key)
+    - `model` (primary key)
+    - `year` (primary key)
+    - `status` (status - available, loaned, maintained, etc.)
+    - `price_per_day`
+
+5. **Rentals table**: stores rental information
+    - `rental_id` (primary key)
+    - `user_id` (foreign key, associated with Users table)
+    - `vehicle_id` (foreign key, associated with the Vehicles table)
+    - `rental_date` (foreign key, associated with the Users table)
+    - `return_date` (foreign key, associated with the Users table)
+    - `status` (status - requested, reviewed, loaned, returned)
+
+6. **VehicleMaintenance table**: stores vehicle maintenance information
+    - `maintenance_id` (primary key)
+    - `vehicle_id` (foreign key, associated with Vehicles table)
+    - `maintenance_date` (primary key)
+    - `description` (primary key) `vehicle_id` (foreign key, associated with the Vehicles table)
+
+7. **Payments table**: stores payment information
+    - `payment_id` (primary key)
+    - `rental_id` (foreign key, associated with the Rentals table)
+    - `payment_date` (foreign key, associated with the Rentals table)
+    - `amount` (foreign key, associated with the Rentals table)
+
+8. **Reviews table**: stores information about user reviews of vehicles
+    - `review_id` (primary key)
+    - `user_id` (foreign key, associated with Users table)
+    - `vehicle_id` (foreign key, associated with the Vehicles table)
+    - `rating` (foreign key, associated with Vehicles table)
+    - `comment` (foreign key, associated with the Users table)
+
+9. **Locations table**: stores vehicle location information.
+    - `location_id` (primary key)
+    - `vehicle_id` (foreign key, associated with the Vehicles table)
+    - `latitude` (primary key) `longitude` (foreign key, associated with the Vehicles table)
+    - `longitude` (primary key) `address` (foreign key, associated with the Vehicles table)
+    - `address` (primary key) `vehicle_id` (foreign key, associated with the Vehicles table)
+
+10. **Messages table**: stores records of message communications between users and administrators
+    - `message_id` (primary key)
+    - `sender_id` (foreign key, associated with Users table or Admins table)
+    - `receiver_id` (foreign key, associated with Users or Admins table)
+    - `message_content` (foreign key, associated with Users table or Admins table)
+    - `timestamp` (foreign key, associated with Users table or Admins table)
+
+## Business Processes Vehicle Rental System Business Processes
+
+1. **User registration and login**
+   - User can become a user of the system by registering an account and logging in with a user name and password.
+
+2. **Vehicle browsing and enquiry
+   - Users can browse all the vehicles available for rental in the system and enquire about a specific type of vehicle or a vehicle with specific conditions according to their needs.
+
+3. **Vehicle Booking**
+   - Users can select the desired vehicle and then make a request to borrow the vehicle, including the expected borrowing time and return time.
+
+4. **Administrator Review**
+   - The administrator receives the user's request for a loaned vehicle, reviews the request, confirms whether the vehicle is available for loan, and handles the request accordingly.
+
+5. **Rental Payment**
+   - Users can complete the payment of leasing fees, including rent and deposit, etc. in the system.
+
+6. **Vehicle pick-up and return**
+   - Users can pick up the vehicle when the borrowing time arrives and return the vehicle to the designated location before the return time.
+
+7. **Vehicle Maintenance**
+   - The system will record the maintenance of the vehicle, including the maintenance time and maintenance description, to ensure the vehicle is in proper operating condition.
+
+8. **User Evaluation**
+   - Users can evaluate the rented vehicles, including ratings and comments for other users' reference.
+
+9. **System Message Notification**
+   - Messages can be communicated between users and administrators, including confirmation of loaned vehicle requests, reminders of payment information, and so on.
+
+These business processes cover the main operations and interactions between users, administrators and vehicles in the rental system, and can meet the needs of users in renting vehicles, administrator management and vehicle operation.
+
+
+
+Translated with DeepL.com (free version)
