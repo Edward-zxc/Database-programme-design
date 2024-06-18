@@ -246,3 +246,52 @@ CALL ProcessRentalRequest(3);  -- 检查对已审核的请求的处理
 -- 测试 5：车辆已处于已借出状态
 UPDATE Rentals SET status = '已借出' WHERE rental_id = 4;
 CALL ProcessRentalRequest(4);  -- 检查对已借出车辆的请求处理
+
+-- 租聘支付
+DELIMITER //
+
+CREATE PROCEDURE MakePayment(
+    IN p_payment_id INT,
+    IN p_rental_id INT,
+    IN p_payment_date DATE,
+    IN p_amount DECIMAL(10, 2)
+)
+BEGIN
+    DECLARE available_balance DECIMAL(10, 2);
+
+    -- 获取用户可用余额
+    SELECT user_balance INTO available_balance
+    FROM payments
+    WHERE rental_id = (SELECT user_id FROM Rentals WHERE rental_id = p_rental_id);
+
+    IF available_balance >= p_amount THEN
+        -- 余额足够，进行支付
+        INSERT INTO db.payments (payment_id, rental_id, payment_date, amount)
+        VALUES (p_payment_id, p_rental_id, p_payment_date, p_amount);
+
+        -- 更新用户余额
+        UPDATE payments
+        SET user_balance = user_balance - p_amount
+        WHERE rental_id = (SELECT user_id FROM Rentals WHERE rental_id = p_rental_id);
+
+        -- 输出支付成功的消息
+        SELECT '租赁支付成功' AS message;
+    ELSE
+        -- 余额不足，支付失败
+        SELECT '余额不足，支付失败' AS message;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- 测试 1：余额足够，支付成功
+-- 假设用户余额为 1000.00，支付金额为 500.00
+CALL MakePayment(51, 1, '2023-09-18', 500.00);
+
+-- 测试 2：余额不足，支付失败
+-- 假设用户余额为 300.00，支付金额为 500.00
+CALL MakePayment(2, 2, '2023-09-18', 500.00);
+
+-- 测试 3：租赁 ID 不存在
+CALL MakePayment(3, 999, '2023-09-18', 500.00);
