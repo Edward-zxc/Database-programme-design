@@ -13,6 +13,21 @@ BEGIN
     VALUES (p_userid, p_username, p_password, p_email, p_phone);
 END;
 
+-- 创建更新用户信息的存储过程
+CREATE PROCEDURE update_user(
+    IN p_userid INT,
+    IN p_username VARCHAR(50),
+    IN p_password VARCHAR(255),
+    IN p_email VARCHAR(100),
+    IN p_phone VARCHAR(15)
+)
+BEGIN
+    UPDATE users
+    SET username = p_username, password = p_password, email = p_email, phone = p_phone
+    WHERE user_id = p_userid;
+    SELECT CONCAT('用户信息更新成功', p_userid) AS result;
+END ;
+
 -- 登录验证的存储过程
 CREATE PROCEDURE login_user (
     IN p_username VARCHAR(50),

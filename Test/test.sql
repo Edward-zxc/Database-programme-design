@@ -6,6 +6,8 @@ CALL register_user(51, 'john_doe', 'hashed_password_value', 'john_doe@example.co
 CALL login_user('john_doe', 'input_password_value');
 -- 用户登录成功
 CALL login_user('john_doe', 'hashed_password_value');
+-- 更新用户测试
+CALL update_user(1, 'JaneDoe', '654321', 'janedoe@example.com', '0987654321');
 
 /*管理员注册登录模块*/
 -- 注册管理员
@@ -64,9 +66,6 @@ CALL ProcessRentalRequest(3);  -- 检查对已审核的请求的处理
 -- 测试 5：车辆已处于已借出状态
 UPDATE Rentals SET status = '已借出' WHERE rental_id = 4;
 CALL ProcessRentalRequest(4);  -- 检查对已借出车辆的请求处理
-
-
-
 
 -- 测试 1：余额足够，支付成功
 -- 假设用户余额为 1000.00，支付金额为 500.00
