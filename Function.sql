@@ -93,3 +93,51 @@ CALL login_admin(51,'admin_user');
 -- 成功
 CALL login_admin(52,'admin_user');
 
+-- 车辆浏览和查询
+DELIMITER //
+
+CREATE PROCEDURE GetFilteredVehicles(
+    IN p_type VARCHAR(50),
+    IN p_status VARCHAR(50),
+    IN p_max_price DECIMAL(10, 2)
+)
+BEGIN
+    -- 声明变量用于存储动态SQL查询语句
+    DECLARE sql_query VARCHAR(1000);
+
+    -- 初始化SQL查询语句，选择所有车辆信息
+    SET @sql_query = 'SELECT vehicle_id, type, model, year, status, price_per_day
+                      FROM vehicles
+                      WHERE 1=1';
+
+    -- 如果车辆类型参数不为空，则添加类型筛选条件
+    IF p_type IS NOT NULL THEN
+        SET @sql_query = CONCAT(@sql_query, ' AND type = "', p_type, '"');
+    END IF;
+
+    -- 如果车辆状态参数不为空，则添加状态筛选条件
+    IF p_status IS NOT NULL THEN
+        SET @sql_query = CONCAT(@sql_query, ' AND status = "', p_status, '"');
+    END IF;
+
+    -- 如果最大日租金参数不为空，则添加价格筛选条件
+    IF p_max_price IS NOT NULL THEN
+        SET @sql_query = CONCAT(@sql_query, ' AND price_per_day <= ', p_max_price);
+    END IF;
+
+    -- 准备并执行动态SQL查询语句
+    PREPARE statement FROM @sql_query;
+    EXECUTE statement;
+
+    -- 释放准备的语句
+    DEALLOCATE PREPARE statement;
+END //
+
+DELIMITER ;
+-- 调用存储过程，传入具体参数
+-- 可借
+CALL GetFilteredVehicles('SUV', '可借',1000.00);
+-- 不可借
+CALL GetFilteredVehicles('Hatchback', '已借出',10000.00);
+-- 维护中
+CALL GetFilteredVehicles('Truck', '维护中',10000.00);
