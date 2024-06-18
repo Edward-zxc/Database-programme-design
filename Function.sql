@@ -295,3 +295,66 @@ CALL MakePayment(2, 2, '2023-09-18', 500.00);
 
 -- 测试 3：租赁 ID 不存在
 CALL MakePayment(3, 999, '2023-09-18', 500.00);
+
+--  车辆维护信息
+DELIMITER //
+
+CREATE PROCEDURE InsertVehicleMaintenance(
+    IN p_maintenance_id INT,
+    IN p_vehicle_id INT,
+    IN p_maintenance_date DATE,
+    IN p_description VARCHAR(255)
+)
+BEGIN
+    INSERT INTO VehicleMaintenance (maintenance_id, vehicle_id, maintenance_date, description)
+    VALUES (p_maintenance_id, p_vehicle_id, p_maintenance_date, p_description);
+END //
+
+CREATE PROCEDURE UpdateVehicleMaintenance(
+    IN p_maintenance_id INT,
+    IN p_vehicle_id INT,
+    IN p_maintenance_date DATE,
+    IN p_description VARCHAR(255)
+)
+BEGIN
+    UPDATE VehicleMaintenance
+    SET vehicle_id = p_vehicle_id, maintenance_date = p_maintenance_date, description = p_description
+    WHERE maintenance_id = p_maintenance_id;
+END //
+
+CREATE PROCEDURE DeleteVehicleMaintenance(
+    IN p_maintenance_id INT
+)
+BEGIN
+    DELETE FROM VehicleMaintenance WHERE maintenance_id = p_maintenance_id;
+END //
+
+CREATE PROCEDURE GetVehicleMaintenanceById(
+    IN p_maintenance_id INT
+)
+BEGIN
+    SELECT * FROM VehicleMaintenance WHERE maintenance_id = p_maintenance_id;
+END //
+
+CREATE PROCEDURE GetAllVehicleMaintenance()
+BEGIN
+    SELECT * FROM VehicleMaintenance;
+END //
+
+DELIMITER ;
+
+-- 测试样例
+-- 插入测试
+CALL InsertVehicleMaintenance(51, 101, '2023-09-20', '更换机油和滤清器');
+
+-- 更新测试
+CALL UpdateVehicleMaintenance(1, 101, '2023-09-21', '更换机油、滤清器和刹车片');
+
+-- 删除测试
+CALL DeleteVehicleMaintenance(1);
+
+-- 根据 ID 获取维护记录测试
+CALL GetVehicleMaintenanceById(1);  -- 期望结果：无记录，因为已删除
+
+-- 获取所有维护记录测试
+CALL GetAllVehicleMaintenance();
