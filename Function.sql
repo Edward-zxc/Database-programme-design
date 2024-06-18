@@ -358,3 +358,74 @@ CALL GetVehicleMaintenanceById(1);  -- 期望结果：无记录，因为已删�
 
 -- 获取所有维护记录测试
 CALL GetAllVehicleMaintenance();
+
+-- 车辆信息（管理员从操作）CRUD
+DELIMITER //
+
+-- 创建插入车辆信息的存储过程
+CREATE PROCEDURE InsertVehicle(
+    IN p_vehicle_id INT,
+    IN p_type VARCHAR(50),
+    IN p_model VARCHAR(50),
+    IN p_year INT,
+    IN p_status VARCHAR(20),
+    IN p_price_per_day DECIMAL(10, 2)
+)
+BEGIN
+    INSERT INTO Vehicles (vehicle_id, type, model, year, status, price_per_day)
+    VALUES (p_vehicle_id, p_type, p_model, p_year, p_status, p_price_per_day);
+END //
+
+-- 创建更新车辆信息的存储过程
+CREATE PROCEDURE UpdateVehicle(
+    IN p_vehicle_id INT,
+    IN p_type VARCHAR(50),
+    IN p_model VARCHAR(50),
+    IN p_year INT,
+    IN p_status VARCHAR(20),
+    IN p_price_per_day DECIMAL(10, 2)
+)
+BEGIN
+    UPDATE Vehicles
+    SET type = p_type, model = p_model, year = p_year, status = p_status, price_per_day = p_price_per_day
+    WHERE vehicle_id = p_vehicle_id;
+END //
+
+-- 创建删除车辆信息的存储过程
+CREATE PROCEDURE DeleteVehicle(
+    IN p_vehicle_id INT
+)
+BEGIN
+    DELETE FROM Vehicles WHERE vehicle_id = p_vehicle_id;
+END //
+
+-- 创建根据 ID 获取车辆信息的存储过程
+CREATE PROCEDURE GetVehicleById(
+    IN p_vehicle_id INT
+)
+BEGIN
+    SELECT * FROM Vehicles WHERE vehicle_id = p_vehicle_id;
+END //
+
+-- 创建获取所有车辆信息的存储过程
+CREATE PROCEDURE GetAllVehicles()
+BEGIN
+    SELECT * FROM Vehicles;
+END //
+
+DELIMITER ;
+
+-- 插入测试
+CALL InsertVehicle(1, '轿车', '丰田卡罗拉', 2020, '可借', 100.00);
+
+-- 更新测试
+CALL UpdateVehicle(1, '轿车', '丰田凯美瑞', 2021, '已借出', 150.00);
+
+-- 删除测试
+CALL DeleteVehicle(1);
+
+-- 根据 ID 获取车辆信息测试
+CALL GetVehicleById(1);  -- 期望结果：无记录，因为已删除
+
+-- 获取所有车辆信息测试
+CALL GetAllVehicles();
