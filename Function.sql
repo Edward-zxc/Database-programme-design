@@ -141,3 +141,61 @@ CALL GetFilteredVehicles('SUV', '可借',1000.00);
 CALL GetFilteredVehicles('Hatchback', '已借出',10000.00);
 -- 维护中
 CALL GetFilteredVehicles('Truck', '维护中',10000.00);
+
+-- 实现借车请求
+
+DELIMITER //
+
+CREATE PROCEDURE SubmitLoanRequest(
+    IN p_request_id INT,
+    IN p_user_id INT,
+    IN p_vehicle_id INT,
+    IN p_request_date DATE,
+    IN p_status VARCHAR(100)
+)
+BEGIN
+    DECLARE v_request_id INT;
+
+    -- 检查输入参数是否有效
+    IF p_request_id <= 0 OR p_user_id <= 0 OR p_vehicle_id <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = '请求 ID、用户 ID 和车辆 ID 必须大于 0';
+    ELSE
+        -- 插入借车请求
+        INSERT INTO UserRequests (request_id, user_id, vehicle_id, request_date, status)
+        VALUES (p_request_id, p_user_id, p_vehicle_id, p_request_date, p_status);
+
+        -- 获取新插入的请求的 request_id
+        SET v_request_id = LAST_INSERT_ID();
+
+        -- 返回请求的 request_id
+        SELECT v_request_id AS request_id;
+
+        -- 提示插入成功
+        SET @message = CONCAT('借车请求成功插入，请求 ID 为: ', CAST(v_request_id AS CHAR));
+        SIGNAL SQLSTATE '01000' SET MESSAGE_TEXT = @message;
+    END IF;
+
+END //
+
+DELIMITER ;
+-- 测试 1：输入有效的参数
+CALL SubmitLoanRequest(60, 1, 1, '2024-06-01', '待审核');
+
+-- 测试 2：输入请求 ID 为 0
+CALL SubmitLoanRequest(52, 2, 3, '2023-09-01', 'Pending');
+
+-- 测试 3：输入用户 ID 为 0
+CALL SubmitLoanRequest(53, 0, 3, '2023-09-01', 'Pending');
+
+-- 测试 4：输入车辆 ID 为 0
+CALL SubmitLoanRequest(54, 2, 0, '2023-09-01', 'Pending');
+
+-- 测试 5：输入全部有效的不同参数
+CALL SubmitLoanRequest(55, 6, 7, '2023-09-02', 'Approved');
+
+-- 假设要提交一个请求，请求 ID 为 101，用户 ID 为 201，车辆 ID 为 301，请求日期为 '2024-07-15'，状态为 '待审核'
+CALL SubmitLoanRequest(56, 50, 50, '2024-07-15', '待审核');
+
+-- 或者另一个请求，请求 ID 为 102，用户 ID 为 202，车辆 ID 为 302，请求日期为 '2024-07-16'，状态为 '已批准'
+CALL SubmitLoanRequest(102, 202, 302, '2024-07-16', '已批准');
