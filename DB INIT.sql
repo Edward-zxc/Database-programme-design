@@ -1,3 +1,6 @@
+-- 数据库创建以及填充数据据代码
+
+
 -- auto-generated definition
 create schema db collate utf8mb4_0900_ai_ci;
 -- auto-generated definition
@@ -179,8 +182,7 @@ VALUES (49, 49, 36.0611, 103.8343, '兰州市城关区兰州火车站');
 INSERT INTO Locations (location_id, vehicle_id, latitude, longitude, address)
 VALUES (50, 50, 34.3416, 108.9398, '西安市雁塔区西安火车站');
 
-Data Source: @localhost Schema: db Table: messages
--- auto-generated definition
+
 create table messages
 (
     message_id      int          not null
@@ -202,7 +204,7 @@ create index receiver_id
 
 create index sender_id
     on messages (sender_id);
- Show table preview-- auto-generated definition
+
 create table payments
 (
     payment_id   int           not null
