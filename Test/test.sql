@@ -1,7 +1,7 @@
 -- 测试样例
 /*用户注册登录模块*/
 -- 用户注册
-CALL register_user(51, 'john_doe', 'hashed_password_value', 'john_doe@example.com', '1234567890'); -- 添加了 user_id 参数
+CALL register_user(52, 'john_doe', 'hashed_password_value', 'john_doe@example.com', '1234567890'); -- 添加了 user_id 参数
 -- 用户登录失败
 CALL login_user('john_doe', 'input_password_value');
 -- 用户登录成功
@@ -105,7 +105,7 @@ CALL UpdateVehicle(1, '轿车', '丰田凯美瑞', 2021, '已借出', 150.00);
 CALL DeleteVehicle(1);
 
 -- 根据 ID 获取车辆信息测试
-CALL GetVehicleById(1);  -- 期望结果：无记录，因为已删除
+CALL GetVehicleById(33);  -- 期望结果：无记录，因为已删除
 
 -- 获取所有车辆信息测试
 CALL GetAllVehicles();

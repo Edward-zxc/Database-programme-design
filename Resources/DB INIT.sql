@@ -80,7 +80,6 @@ create index vehicle_id
     on locations (vehicle_id);
 
 use db;
-
 INSERT INTO Locations (location_id, vehicle_id, latitude, longitude, address)
 VALUES (1, 1, 31.2304, 121.4737, '上海市黄浦区南京东路');
 INSERT INTO Locations (location_id, vehicle_id, latitude, longitude, address)
@@ -220,7 +219,6 @@ create index rental_id
     on payments (rental_id);
 
 use db;
--- 向 Payments 表插入支付信息
 INSERT INTO Payments (payment_id, rental_id, payment_date, amount) VALUES
 (1, 1, '2024-06-01', 100),
 (2, 2, '2024-06-02', 150),
@@ -295,7 +293,6 @@ create index vehicle_id
     on rentals (vehicle_id);
 
 use db;
--- 向 Rentals 表插入租赁信息
 INSERT INTO Rentals (rental_id, user_id, vehicle_id, rental_date, return_date, status) VALUES
 (1, 1, 1, '2024-06-01', '2024-06-10', '请求中'),
 (2, 2, 2, '2024-06-02', '2024-06-12', '已审核'),
