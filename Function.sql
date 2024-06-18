@@ -345,10 +345,10 @@ DELIMITER ;
 
 -- 测试样例
 -- 插入测试
-CALL InsertVehicleMaintenance(51, 101, '2023-09-20', '更换机油和滤清器');
+CALL InsertVehicleMaintenance(51, 50, '2023-09-20', '更换机油和滤清器');
 
 -- 更新测试
-CALL UpdateVehicleMaintenance(1, 101, '2023-09-21', '更换机油、滤清器和刹车片');
+CALL UpdateVehicleMaintenance(1, 50, '2023-09-21', '更换机油、滤清器和刹车片');
 
 -- 删除测试
 CALL DeleteVehicleMaintenance(1);
