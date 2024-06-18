@@ -102,8 +102,7 @@ CREATE PROCEDURE GetFilteredVehicles(
     IN p_max_price DECIMAL(10, 2)
 )
 BEGIN
-    -- 声明变量用于存储动态SQL查询语句
-    DECLARE sql_query VARCHAR(1000);
+
 
     -- 初始化SQL查询语句，选择所有车辆信息
     SET @sql_query = 'SELECT vehicle_id, type, model, year, status, price_per_day
@@ -199,3 +198,51 @@ CALL SubmitLoanRequest(56, 50, 50, '2024-07-15', '待审核');
 
 -- 或者另一个请求，请求 ID 为 102，用户 ID 为 202，车辆 ID 为 302，请求日期为 '2024-07-16'，状态为 '已批准'
 CALL SubmitLoanRequest(102, 202, 302, '2024-07-16', '已批准');
+
+-- 管理员审核
+DELIMITER //
+
+CREATE PROCEDURE ProcessRentalRequest(
+    IN p_rental_id INT
+)
+BEGIN
+    DECLARE v_vehicle_available BOOLEAN;
+
+    -- 检查车辆是否可用
+    SELECT (COUNT(*) = 0) INTO v_vehicle_available
+    FROM Rentals
+    WHERE vehicle_id = (SELECT vehicle_id FROM Rentals WHERE rental_id = p_rental_id)
+      AND status IN ('已借出', '请求中');
+
+    IF v_vehicle_available THEN
+        -- 更新借车请求状态为已审核
+        UPDATE Rentals
+        SET status = '已审核'
+        WHERE rental_id = p_rental_id;
+
+        -- 输出审核成功的消息
+        SELECT '借车请求审核成功，车辆可借出' AS message;
+    ELSE
+        -- 输出车辆不可用的消息
+        SELECT '车辆当前不可借出' AS message;
+    END IF;
+END //
+
+DELIMITER ;
+-- 测试样例
+-- 测试 1：车辆可用，请求审核成功
+CALL ProcessRentalRequest(1);  -- 假设 rental_id 为 1 的车辆可用
+
+-- 测试 2：车辆不可用
+CALL ProcessRentalRequest(2);  -- 假设 rental_id 为 2 的车辆不可用
+
+-- 测试 3：不存在的 rental_id
+CALL ProcessRentalRequest(999);  -- 假设 999 不存在于 Rentals 表中
+
+-- 测试 4：车辆已处于已审核状态
+UPDATE Rentals SET status = '已审核' WHERE rental_id = 3;
+CALL ProcessRentalRequest(3);  -- 检查对已审核的请求的处理
+
+-- 测试 5：车辆已处于已借出状态
+UPDATE Rentals SET status = '已借出' WHERE rental_id = 4;
+CALL ProcessRentalRequest(4);  -- 检查对已借出车辆的请求处理
